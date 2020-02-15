@@ -52,6 +52,10 @@ public class Device extends CordovaPlugin {
     // (return "unknown") from API 28, the last API before forcing the use of
     // getSerial() will be set to API 27
     public static int LAST_SDK_BEFORE_FORCE_READ_PHONE_STATE_NEEDED = 27; // android.os.Build.VERSION_CODES.O_MR1
+
+    public static int LAST_SDK_SUPPORTING_ACCESS_TO_PERSISTENT_DEVICE_IDENTIFIERS = 28; // android.os.Build.VERSION_CODES.O_MR2
+
+//    String [] permissions = { Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PRIVILEGED_PHONE_STATE };
     String [] permissions = { Manifest.permission.READ_PHONE_STATE };
     public static boolean bReadPhoneStatePermissionNeeded = false;  // will set to true if permissions needed, based on the device skd api level
     CallbackContext context;    // save the CallbackContext on execute for permission callback
@@ -174,9 +178,11 @@ public class Device extends CordovaPlugin {
     public String getSerialNumber() {
         // API 29+ no longer supports Build.SERIAL (returns UNKNOWN); see
         // https://developer.android.com/reference/android/os/Build.html#SERIAL
-        String serial = (!Device.bReadPhoneStatePermissionNeeded) ?
+        String serial = (android.os.Build.VERSION.SDK_INT <= LAST_SDK_SUPPORTING_ACCESS_TO_PERSISTENT_DEVICE_IDENTIFIERS) ?
+                ((!Device.bReadPhoneStatePermissionNeeded) ?
                             android.os.Build.SERIAL :
-                            android.os.Build.getSerial();
+                            android.os.Build.getSerial()) :
+                    ("UUID"+this.getUuid());
         return serial;
     }
 

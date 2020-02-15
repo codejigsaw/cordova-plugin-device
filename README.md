@@ -255,7 +255,11 @@ Get the device hardware serial number ([SERIAL](http://developer.android.com/ref
 
 ```js
 var string = device.serial;
+
 ```
+### Android 10 Quirk
+
+Due to ([Android 10 Privacy Changes](https://developer.android.com/about/versions/10/privacy/changes#non-resettable-device-ids)) the `device.serial` returns a string with `"UUID" + device.uuid` which is no longer a persistent (non-resettable) identifier and likely changes across factory resets, Android upgrades, device users. :-(
 
 ### Supported Platforms
 
